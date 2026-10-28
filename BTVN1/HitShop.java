@@ -10,8 +10,8 @@ public class HitShop {
         double donGia = scanner.nextDouble();
         System.out.print("So luong: ");
         int soLuong = scanner.nextInt();
-        boolean hople = !tenMatHang.isEmpty() && donGia > 0 && soLuong > 0;
-        if (hople) {
+        boolean hopLe = !tenMatHang.isEmpty() && donGia > 0 && soLuong > 0;
+        if (hopLe) {
             double thanhTien = donGia * soLuong;
             double tienVat = thanhTien * VAT_RATE;
             double tongThanhToan = thanhTien + tienVat + SHIPPING_FEE;
