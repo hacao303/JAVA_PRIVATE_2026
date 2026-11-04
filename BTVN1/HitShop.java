@@ -1,51 +1,48 @@
-import java.util.Scanner;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Scanner;
 public class HitShop {
-    static final ArrayList<String> names = new ArrayList<>();
-    static final ArrayList<Double> prices = new ArrayList<>();
-    static final ArrayList<Integer> quantities = new ArrayList<>();
+    static ArrayList<String> names = new ArrayList<>();
+    static ArrayList<Double> prices = new ArrayList<>();
+    static ArrayList<Integer> quantities = new ArrayList<>();
     static void printMenu() {
-        System.out.println("\nDANH SÁCH CÁC CHỨC NĂNG");
-        System.out.println("1. Thêm mặt hàng");
-        System.out.println("2. Xóa mặt hàng");
-        System.out.println("3. Xem giỏ");
-        System.out.println("4. Xem tổng tiền");
-        System.out.println("0. Thoát\n");
-        System.out.print("Chon chuc nang so: ");
+        System.out.println("\nHIT SHOP");
+        System.out.println("1. Them mat hang");
+        System.out.println("2. Xoa mat hang");
+        System.out.println("3. Xem gio hang");
+        System.out.println("4. Xem tong tien");
+        System.out.println("0. Thoat");
+        System.out.print("\nChon chuc nang so: ");
     }
     static void addItem(String name, double price, int quantity) {
-        boolean hople = !name.isBlank() && price > 0 && Double.isFinite(price) && quantity > 0;
-        if (hople) {
-            names.add(name);
-            prices.add(price);
-            quantities.add(quantity);
-        } else {
-            System.out.println("Du lieu khong hop le: ten khong duoc rong, don gia > 0 va so luong > 0.");
+        if (name.isBlank() || price <= 0 || !Double.isFinite(price) || quantity <= 0) {
+            System.out.println("Du lieu khong hop le.");
+            return;
         }
+        names.add(name);
+        prices.add(price);
+        quantities.add(quantity);
+        System.out.println("Them thanh cong.");
     }
     static void removeItem(int index) {
         if (index < 0 || index >= names.size()) {
-            System.out.println("Không tìm thấy mặt hàng.");
+            System.out.println("Khong tim thay mat hang.");
             return;
         }
         names.remove(index);
         prices.remove(index);
         quantities.remove(index);
+        System.out.println("Xoa thanh cong.");
     }
     static void printItems() {
         if (names.isEmpty()) {
-            System.out.println("Giỏ hàng đang trống.");
+            System.out.println("Gio hang trong.");
             return;
         }
+        System.out.println("\nGIO HANG");
         for (int i = 0; i < names.size(); i++) {
-            double lineTotal = prices.get(i) * quantities.get(i);
-            System.out.printf("%d. %s | %.1f | SL: %d | Thành tiền: %.1f%n",
-                    i + 1,
-                    names.get(i),
-                    prices.get(i),
-                    quantities.get(i),
-                    lineTotal);
+            System.out.printf("%d. %s | Gia: %.0f | SL: %d | Thanh tien: %.0f%n",
+                    i + 1, names.get(i), prices.get(i), quantities.get(i),
+                    prices.get(i) * quantities.get(i));
         }
     }
     static double calculateTotal() {
@@ -56,76 +53,66 @@ public class HitShop {
         return total;
     }
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         final double VAT_RATE = 0.10;
         final double SHIPPING_FEE = 20000;
         int choice = -1;
         do {
             printMenu();
-            if (!scanner.hasNextInt()) {
-                System.out.println("Lựa chọn không hợp lệ.");
-                scanner.nextLine();
+            if (!sc.hasNextInt()) {
+                System.out.println("Lua chon khong hop le.");
+                sc.nextLine();
                 continue;
             }
-            choice = scanner.nextInt();
-            scanner.nextLine();
+            choice = sc.nextInt();
+            sc.nextLine();
             switch (choice) {
                 case 1 -> {
                     System.out.print("Ten mat hang: ");
-                    String tenMatHang = scanner.nextLine();
+                    String name = sc.nextLine();
                     System.out.print("Don gia: ");
-                    if (!scanner.hasNextDouble()) {
+                    if (!sc.hasNextDouble()) {
                         System.out.println("Du lieu khong hop le.");
-                        scanner.nextLine();
+                        sc.nextLine();
                         break;
                     }
-                    double donGia = scanner.nextDouble();
+                    double price = sc.nextDouble();
                     System.out.print("So luong: ");
-                    if (!scanner.hasNextInt()) {
+                    if (!sc.hasNextInt()) {
                         System.out.println("Du lieu khong hop le.");
-                        scanner.nextLine();
+                        sc.nextLine();
                         break;
                     }
-                    int soLuong = scanner.nextInt();
-                    scanner.nextLine();
-                    boolean hople = !tenMatHang.isBlank() && donGia > 0
-                            && Double.isFinite(donGia) && soLuong > 0;
-                    if (hople) {
-                        addItem(tenMatHang, donGia, soLuong);
-                    } else {
-                        System.out.println("Du lieu khong hop le: ten khong duoc rong, don gia > 0 va so luong > 0.");
-                    }
+                    int quantity = sc.nextInt();
+                    sc.nextLine();
+                    addItem(name, price, quantity);
                 }
                 case 2 -> {
-                    System.out.print("Nhap so thu tu can xoa: ");
-                    if (!scanner.hasNextInt()) {
-                        System.out.println("Không tìm thấy mặt hàng.");
-                        scanner.nextLine();
+                    System.out.print("Nhap STT can xoa: ");
+                    if (!sc.hasNextInt()) {
+                        System.out.println("Khong tim thay mat hang.");
+                        sc.nextLine();
                         break;
                     }
-                    int displayNumber = scanner.nextInt();
-                    scanner.nextLine();
-                    removeItem(displayNumber - 1);
+                    int index = sc.nextInt();
+                    sc.nextLine();
+                    removeItem(index - 1);
                 }
                 case 3 -> printItems();
                 case 4 -> {
-                    double thanhTien = calculateTotal();
-                    double tienVat = thanhTien * VAT_RATE;
-                    double phiVanChuyen = 0;
-                    if (!names.isEmpty()) {
-                        phiVanChuyen = SHIPPING_FEE;
-                    }
-                    double tongThanhToan = thanhTien + tienVat + phiVanChuyen;
+                    double total = calculateTotal();
+                    double vat = total * VAT_RATE;
+                    double shipping = names.isEmpty() ? 0 : SHIPPING_FEE;
                     System.out.println("\nHOA DON");
-                    System.out.println("Thanh tien: " + thanhTien);
-                    System.out.println("Tien VAT: " + tienVat);
-                    System.out.println("Phi van chuyen: " + phiVanChuyen);
-                    System.out.println("Tong thanh toan: " + tongThanhToan);
+                    System.out.printf("Tien hang: %.0f%n", total);
+                    System.out.printf("VAT: %.0f%n", vat);
+                    System.out.printf("Phi van chuyen: %.0f%n", shipping);
+                    System.out.printf("Tong thanh toan: %.0f%n", total + vat + shipping);
                 }
-                case 0 -> System.out.println("Kết thúc.");
-                default -> System.out.println("Lựa chọn không hợp lệ.");
+                case 0 -> System.out.println("Ket thuc.");
+                default -> System.out.println("Lua chon khong hop le.");
             }
         } while (choice != 0);
-        scanner.close();
+        sc.close();
     }
 }
